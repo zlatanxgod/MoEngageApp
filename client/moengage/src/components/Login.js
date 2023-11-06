@@ -96,7 +96,7 @@ const Login = () => {
             sx={{ mt: 1 }}
           >
             {error && <Alert severity="error">{error}</Alert>}
-            {success && <Alert severity="success">Login Successful!</Alert>}
+            {success && <Alert severity="success">Sign Up Successful!</Alert>}
             {success && navigateToHome()}
 
             <TextField
