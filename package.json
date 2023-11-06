@@ -1,0 +1,22 @@
+{
+  "name": "moengage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install-client": "npm install --prefix client/moengage",
+    "install-server": "npm install --prefix server",
+    "install": "npm run install-server && npm run install-client",
+    "client": "npm start --prefix client/moengage",
+    "server": "npm start --prefix server",
+    "watch": "concurrently  \"npm run server\" \"npm run client\"",
+    "deploy": "npm run build --prefix client/moengage && npm start --prefix server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

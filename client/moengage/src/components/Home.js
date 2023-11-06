@@ -68,7 +68,7 @@ const Home = () => {
     if (city) q = q + `?by_city=${city}`;
     if (name) q = q + `?by_name=${name}`;
     if (breweryType) q = q + `?by_type=${breweryType}`;
-    const limit = "&page=1&per_page=3";
+    const limit = "&page=1&per_page=50";
 
     try {
       const res = await axios.get(API_URL + q + limit);
