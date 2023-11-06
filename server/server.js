@@ -26,12 +26,12 @@ const fetchData = async (req, res) => {
         //console.log(rec.rating);
         item.rating = rec.rating;
         item.review = rec.review;
+        item.reviewsRatings = rec.reviewsRatings;
         //console.log("=====>", item);
         return item;
       })
     );
-    //console.log(new_return);
-    console.log("whaaaat", new_return);
+
     return new_return;
   } catch (error) {
     console.log("Eroor occ hitting API", error);
@@ -47,6 +47,15 @@ app.use(express.json());
 app.get("/breweries", validateQueryParams, async (req, res) => {
   const response = await fetchData(req, res);
   res.status(200).json(response);
+});
+
+app.get("/getBrewery/:id", async (req, res) => {
+  const idf = req.params.id;
+  const response = await moengageMongo.find({
+    id: idf,
+  });
+  console.log("back=====>", response);
+  return res.status(200).json(response);
 });
 
 app.post("/ratingandreview", async (req, res) => {

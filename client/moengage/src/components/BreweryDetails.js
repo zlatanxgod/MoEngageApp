@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Text } from "react";
 import { useState, useEffect } from "react";
 import { Alert, TextField } from "@mui/material";
 import Container from "@mui/material/Container";
@@ -14,6 +14,7 @@ import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import { useLocation } from "react-router-dom";
+import ReviewList from "./ReviewList";
 
 const BreweryDetails = () => {
   const location = useLocation();
@@ -29,6 +30,8 @@ const BreweryDetails = () => {
     textAlign: "center",
     color: theme.palette.text.secondary,
   }));
+
+  console.log("-.", data);
 
   return (
     <div>
@@ -59,7 +62,8 @@ const BreweryDetails = () => {
           </Grid> */}
           {Object.keys(data?.[0])?.map((key) => {
             return (
-              data?.[0][key] && (
+              data?.[0][key] &&
+              key != "reviewsRatings" && (
                 <Grid
                   spacing={2}
                   style={{
@@ -124,13 +128,52 @@ const ReviewBox = ({ data, rating }) => {
   const [review, setReview] = useState("");
   const [success, setSuccess] = useState(false);
 
-  console.log("==========", data);
-
-  const API_URL = "http://localhost:3001/ratingandreview";
+  const API_URL = "http://localhost:3001/ratingandreview/";
+  const API_URL2 = "http://localhost:3001/getBrewery/";
   const navigate = useNavigate();
+
+  console.log("==========*", data);
+
+  const postReviewData = async () => {
+    let rec = "";
+    try {
+      rec = await axios.get(API_URL2 + data.id);
+    } catch (error) {
+      console.log("Eroor", error);
+    }
+
+    console.log("=====>", rec?.data);
+
+    const postData = {
+      id: data.id,
+      rating,
+      review,
+      reviewsRatings: [
+        ...rec?.data,
+        {
+          review,
+          rating,
+        },
+      ],
+    };
+
+    try {
+      await axios.post(API_URL, postData);
+      setSuccess(true);
+      setTimeout(() => {
+        navigate("/home");
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+    }
+
+    console.log(postData);
+  };
+
   return (
     <>
       {success && <Alert severity="success">Submitted Successfully</Alert>}
+
       <Typography fontSize={28}>Review</Typography>
       <TextField
         onChange={(e) => {
@@ -144,30 +187,13 @@ const ReviewBox = ({ data, rating }) => {
         fullWidth="60%"
       />
       <Button
-        style={{ marginTop: "10px" }}
-        onClick={async () => {
-          const postData = {
-            id: data.id,
-            rating,
-            review,
-          };
-
-          try {
-            await axios.post(API_URL, postData);
-            setSuccess(true);
-            setTimeout(() => {
-              navigate("/home");
-            }, 1000);
-          } catch (error) {
-            console.log(error);
-          }
-
-          console.log(postData);
-        }}
+        style={{ marginTop: "10px", marginBottom: 32 }}
+        onClick={postReviewData}
         variant="contained"
       >
         Submit
       </Button>
+      <ReviewList data={data} />
     </>
   );
 };
