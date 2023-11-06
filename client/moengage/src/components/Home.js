@@ -8,6 +8,8 @@ import Box from "@mui/material/Box";
 import axios from "axios";
 import BreweyInfo from "./BreweryInfo";
 import DataGridDemo from "./DataGrid";
+import { useNavigate } from "react-router-dom";
+
 const Home = () => {
   const [city, setCity] = useState("");
   const [name, setPassword] = useState("");
@@ -16,10 +18,11 @@ const Home = () => {
   const [success, setSuccess] = useState(false);
 
   const API_URL = "http://localhost:3001/breweries";
+  const navigate = useNavigate();
 
   const displayBreweryInfo = (data) => {
     const rows = data.map(
-      ({ id, name, address_1, city, state, website_url, phone }) => ({
+      ({
         id,
         name,
         address_1,
@@ -27,7 +30,21 @@ const Home = () => {
         state,
         website_url,
         phone,
-      })
+        review,
+        rating,
+      }) => {
+        return {
+          id,
+          name,
+          address_1,
+          city,
+          state,
+          website_url,
+          phone,
+          review,
+          rating,
+        };
+      }
     );
     console.log(rows);
     return (
@@ -35,8 +52,11 @@ const Home = () => {
         rows={rows}
         onClick={(params) => {
           console.log(params.row.name);
-          console.log(data.filter((item) => item.id === params.row.id));
-          console.log(data);
+          // console.log(data.filter((item) => item.id === params.row.id));
+          const brew = data.filter((item) => item.id === params.row.id);
+          navigate("/details", {
+            state: { data: brew },
+          });
         }}
       />
     );
@@ -48,9 +68,10 @@ const Home = () => {
     if (city) q = q + `?by_city=${city}`;
     if (name) q = q + `?by_name=${name}`;
     if (breweryType) q = q + `?by_type=${breweryType}`;
+    const limit = "&page=1&per_page=3";
 
     try {
-      const res = await axios.get(API_URL + q);
+      const res = await axios.get(API_URL + q + limit);
       //console.log(JSON.stringify(res.data));
       return res.data;
     } catch (error) {
