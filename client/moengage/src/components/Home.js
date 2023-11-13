@@ -17,7 +17,7 @@ const Home = () => {
   const [list, setList] = useState([]);
   const [success, setSuccess] = useState(false);
 
-  const API_URL = "http://localhost:3001/breweries";
+  const API_URL = "breweries";
   const navigate = useNavigate();
 
   const displayBreweryInfo = (data) => {

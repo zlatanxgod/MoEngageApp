@@ -128,8 +128,8 @@ const ReviewBox = ({ data, rating }) => {
   const [review, setReview] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const API_URL = "http://localhost:3001/ratingandreview/";
-  const API_URL2 = "http://localhost:3001/getBrewery/";
+  const API_URL = "ratingandreview/";
+  const API_URL2 = "getBrewery/";
   const navigate = useNavigate();
 
   console.log("==========*", data);

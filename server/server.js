@@ -5,8 +5,19 @@ import axios from "axios";
 import validateQueryParams from "./validateQuery.js";
 import cors from "cors";
 import mongoose from "mongoose";
-
+import path from "path";
 import moengageMongo from "./moengage.mongo.js";
+
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
 const API_URL = "https://api.openbrewerydb.org/v1";
 const MONGO_URL =
@@ -40,14 +51,12 @@ const fetchData = async (req, res) => {
 
 dotenv.config();
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-app.get("/breweries", validateQueryParams, async (req, res) => {
-  const response = await fetchData(req, res);
-  res.status(200).json(response);
-});
+app
+  .get("/breweries", validateQueryParams, async (req, res) => {
+    const response = await fetchData(req, res);
+    res.status(200).json(response);
+  })
+  .on("error", (err) => console.log("cannot get breweries", err));
 
 app.get("/getBrewery/:id", async (req, res) => {
   const idf = req.params.id;
@@ -71,7 +80,7 @@ app.post("/ratingandreview", async (req, res) => {
   res.status(200).send(req.body);
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8000;
 mongoose.connection.once("open", () => {
   console.log("Connection to MDB ready");
 });
